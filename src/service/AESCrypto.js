@@ -18,10 +18,24 @@ export const AESGenerateSecretKey = (secretKey, clientKey) => {
 
 export const AESEncrypt = (jsonData) => {
 	const key = window.localStorage.getItem("AESKey");
-	return CryptoJS.AES.encrypt(JSON.stringify(jsonData), key).toString();
+	if (key) return CryptoJS.AES.encrypt(JSON.stringify(jsonData), key).toString();
+	return ":)";
 };
 
 export const AESDecrypt = (encrypt) => {
 	const key = window.localStorage.getItem("AESKey");
-	return JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(encrypt, key)));
+	if (key) return JSON.parse(CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(encrypt, key)));
+	return ":)";
+};
+
+export const AESEncryptMessage = (message) => {
+	const key = window.localStorage.getItem("AESKey");
+	if (key) return CryptoJS.AES.encrypt(message, key).toString();
+	return ":)";
+};
+
+export const AESDecryptMessage = (encrypt) => {
+	const key = window.localStorage.getItem("AESKey");
+	if (key) return CryptoJS.enc.Utf8.stringify(CryptoJS.AES.decrypt(encrypt, key));
+	return ":)";
 };

@@ -69,7 +69,8 @@ export default function LoginForm(props) {
 					if (user && token) {
 						Cookie.set("quochoi", token);
 						Cookie.set("user", user);
-						setMode("isLogin");
+						Cookie.set("userId", response.data.user.id);
+						setMode("login");
 					} else {
 						setError({
 							isError: true,
@@ -151,7 +152,7 @@ export default function LoginForm(props) {
 						/>
 						<label htmlFor="safe">SafeMode</label>
 					</div>
-					<button className="button is-black is-fullwidth">Login</button>
+					<button className="button is-primary is-fullwidth">Login</button>
 					{error.isError && <span className="has-text-danger">{error.message}</span>}
 				</form>
 			</div>

@@ -4,24 +4,24 @@ import logo from "../images/lion.png";
 
 function Header(props) {
 	const {mode, setMode} = props;
-	const loginButtonHandler = (event) => {
-		if (mode === "isLogin") {
+	const loginButtonHandler = () => {
+		if (mode === "login") {
 			Cookie.remove("quochoi");
 			Cookie.remove("user");
 			window.localStorage.removeItem("AESKey");
 			window.localStorage.removeItem("clientKey");
-			setMode("main");
+			setMode("logout");
 			return;
 		}
-		setMode("login");
+		setMode("do-login");
 	};
 
 	useEffect(() => {
-		if (Cookie.get("user")) setMode("isLogin");
+		if (Cookie.get("user")) setMode("login");
 	});
 
 	return (
-		<nav className="navbar is-black is-flex is-align-items-center is-justify-content-space-between pl-5 pr-5">
+		<nav className="navbar is-primary is-flex is-align-items-center is-justify-content-space-between pl-5 pr-5">
 			<img
 				src={logo}
 				alt="Logo"
@@ -31,9 +31,9 @@ function Header(props) {
 				}}
 			/>
 			<div>
-				{mode === "isLogin" && <span className="mr-5 is-size-4">{Cookie.get("user")}</span>}
-				<div className="button" onClick={loginButtonHandler}>
-					{(mode === "isLogin" && "Logout") || "Login"}
+				{mode === "login" && <span className="mr-5 is-size-4">{Cookie.get("user")}</span>}
+				<div className="button is-light" onClick={loginButtonHandler}>
+					{(mode === "login" && "Logout") || "Login"}
 				</div>
 			</div>
 		</nav>

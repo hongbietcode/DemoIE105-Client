@@ -1,0 +1,40 @@
+.user {
+	display: flex;
+	padding: 5px 20px;
+	background-color: #00d1b2;
+	cursor: pointer;
+	position: relative;
+}
+
+.user.active,
+.user:hover {
+	background-color: #03ac92;
+}
+
+.user__images {
+	width: 40px;
+	height: 40px;
+	overflow: hidden;
+	object-fit: cover;
+	border-radius: 20px;
+}
+
+.user__name {
+	color: white;
+	font-weight: bold;
+	text-align: center;
+	margin-left: 10px;
+	padding: 7px;
+}
+
+@media screen and (max-width: 760px) {
+	.user__name {
+		display: none;
+	}
+
+	.user__images,
+	.user__images img {
+		width: 30px !important;
+		height: 30px !important;
+	}
+}

@@ -1,5 +1,5 @@
 :root {
-	--gray: #c1c0c0;
+	--gray: #e9e9e9;
 }
 * {
 	margin: 0;
@@ -12,6 +12,12 @@ body {
 		"Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", sans-serif;
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
+	-webkit-touch-callout: none; /* iOS Safari */
+	-webkit-user-select: none; /* Safari */
+	-khtml-user-select: none; /* Konqueror HTML */
+	-moz-user-select: none; /* Old versions of Firefox */
+	-ms-user-select: none; /* Internet Explorer/Edge */
+	user-select: none;
 }
 
 code {
