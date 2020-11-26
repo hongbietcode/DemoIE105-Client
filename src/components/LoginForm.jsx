@@ -1,5 +1,6 @@
 import Cookie from "js-cookie";
 import React, {useEffect, useRef, useState} from "react";
+import { BASE_SERVER_URL } from "../baseURL";
 import logo from "../images/tiger-head.png";
 import {randomClientKey, AESGenerateSecretKey, AESDecrypt} from "../service/AESCrypto";
 import {RsaEncrypt} from "../service/RSACrypto";
@@ -19,7 +20,7 @@ export default function LoginForm(props) {
 	useEffect(() => {
 		if (checked) {
 			axios
-				.get(process.env.REACT_APP_SERVER_BASE + "/api/key")
+				.get(BASE_SERVER_URL + "/api/key")
 				.then((res) => setKey(res.data.key));
 		}
 	}, [checked, key]);
@@ -49,7 +50,7 @@ export default function LoginForm(props) {
 		}
 
 		axios
-			.post(process.env.REACT_APP_SERVER_BASE + "/api/login", data)
+			.post(BASE_SERVER_URL + "/api/login", data)
 			.then((response) => {
 				if (response.status === 200) {
 					setError({

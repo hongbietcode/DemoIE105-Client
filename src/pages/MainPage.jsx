@@ -4,6 +4,7 @@ import LoginForm from "../components/LoginForm";
 import SocketIO from "../hooks/socketIO";
 import "./MainPage.css";
 import Cookie from "js-cookie";
+import { BASE_SERVER_URL } from "../baseURL";
 
 const axios = require("axios");
 
@@ -15,7 +16,7 @@ export default function MainPage(props) {
 
 	useEffect(() => {
 		axios
-			.get(process.env.REACT_APP_SERVER_BASE + "/api/users", {params: {id: UserId}})
+			.get(BASE_SERVER_URL + "/api/users", {params: {id: UserId}})
 			.then((res) => {
 				setUsers(res.data);
 			});

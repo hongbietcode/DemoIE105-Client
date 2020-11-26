@@ -1,6 +1,7 @@
 import socketIOClient from "socket.io-client";
 import {useEffect, useState} from "react";
 import Cookie from "js-cookie";
+import { BASE_SERVER_URL } from "../baseURL";
 
 export const useReceive = (socket) => {
 	const [message, setMessage] = useState("");
@@ -29,7 +30,7 @@ export const useSyncUser = (socket) => {
 class SocketIO {
 	_socket;
 	constructor(userId) {
-		this._socket = socketIOClient(process.env.REACT_APP_SERVER_BASE);
+		this._socket = socketIOClient(BASE_SERVER_URL);
 
 		const user = {
 			user: Cookie.get("user"),
