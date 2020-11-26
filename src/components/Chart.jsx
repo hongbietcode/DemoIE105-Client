@@ -1,21 +1,26 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, {useEffect, useRef, useState} from "react";
-import {useReceive, useSyncUser} from "../hooks/socketIO";
+import Cookie from "js-cookie";
+import React, {useEffect, useMemo, useRef, useState} from "react";
+import {BASE_SERVER_URL} from "../baseURL";
+import SocketIO, {useReceive} from "../hooks/socketIO";
+import {AESDecrypt, AESDecryptMessage, AESEncryptMessage} from "../service/AESCrypto";
 import "./Chart.css";
 import Message from "./Message";
-import Cookie from "js-cookie";
 import User from "./User";
-import {AESDecryptMessage, AESEncryptMessage} from "../service/AESCrypto";
+
+const axios = require("axios");
+const classNames = require("classnames");
 
 function Chart(props) {
-	const {socket, mode, setMode, users} = props;
-
-	const [message, setMessage] = useState([]);
-
-	const messageRef = useRef(null);
+	const safeMode = localStorage.getItem("AESKey") ? true : false;
 	const userId = Cookie.get("userId");
 	const user = Cookie.get("user");
 
+	const socket = useMemo(() => new SocketIO(userId, safeMode), []);
+
+	const {mode, setMode, users} = props;
+	const [message, setMessage] = useState([]);
+	const messageRef = useRef(null);
 	const receive = useReceive(socket._socket);
 
 	const enterHandler = (e) => {
@@ -54,6 +59,24 @@ function Chart(props) {
 	};
 
 	useEffect(() => {
+		if (safeMode) {
+			axios
+				.get(BASE_SERVER_URL + "/api/messages", {
+					headers: {
+						"x-auth-token": Cookie.get("quochoi"),
+					},
+				})
+				.then((response) => {
+					try {
+						response.data = AESDecrypt(response.data);
+						setMessage(response.data);
+						console.log("Messages :", response.data);
+					} catch {}
+				});
+		}
+	}, []);
+
+	useEffect(() => {
 		if (receive !== "") {
 			console.log("receive-message: ", receive);
 			//Safe mode
@@ -79,10 +102,14 @@ function Chart(props) {
 
 	useEffect(() => {
 		if (mode === "logout") {
+			Cookie.remove("userId");
 			setMode("main");
 		}
-		return () => socket.Disconnect(userId);
-	}, [socket]);
+		return () => {
+			socket.Logout(userId);
+			socket.Disconnect(userId);
+		};
+	}, [mode]);
 
 	return (
 		<div className="chart">
@@ -93,7 +120,7 @@ function Chart(props) {
 				</div>
 			</div>
 			<div className="chart--message">
-				<div className="message-box">
+				<div className={classNames("message-box", {unsafe: !safeMode})}>
 					{message.map((mes, index) => (
 						<Message
 							value={mes.payload}

@@ -1,7 +1,7 @@
 import socketIOClient from "socket.io-client";
 import {useEffect, useState} from "react";
 import Cookie from "js-cookie";
-import { BASE_SERVER_URL } from "../baseURL";
+import {BASE_SERVER_URL} from "../baseURL";
 
 export const useReceive = (socket) => {
 	const [message, setMessage] = useState("");
@@ -50,8 +50,12 @@ class SocketIO {
 		this._socket.emit("CLIENT", message);
 	}
 
+	Logout(userId) {
+		this._socket.emit("LOGOUT", userId);
+	}
+
 	Disconnect(userId) {
-		this._socket.emit("WILL_DISCONNECT", userId).close();
+		this._socket.close();
 	}
 }
 

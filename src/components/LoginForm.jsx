@@ -1,6 +1,6 @@
 import Cookie from "js-cookie";
 import React, {useEffect, useRef, useState} from "react";
-import { BASE_SERVER_URL } from "../baseURL";
+import {BASE_SERVER_URL} from "../baseURL";
 import logo from "../images/tiger-head.png";
 import {randomClientKey, AESGenerateSecretKey, AESDecrypt} from "../service/AESCrypto";
 import {RsaEncrypt} from "../service/RSACrypto";
@@ -19,11 +19,12 @@ export default function LoginForm(props) {
 	const [error, setError] = useState({isError: false, message: null});
 	useEffect(() => {
 		if (checked) {
-			axios
-				.get(BASE_SERVER_URL + "/api/key")
-				.then((res) => setKey(res.data.key));
+			axios.get(BASE_SERVER_URL + "/api/key").then((res) => {
+				setKey(res.data.key);
+				alert(`RSA Public key :\n ${res.data.key}`);
+			});
 		}
-	}, [checked, key]);
+	}, [checked]);
 
 	const submitHandler = (event) => {
 		event.preventDefault();
@@ -34,8 +35,9 @@ export default function LoginForm(props) {
 
 		if (checked) {
 			const clientKey = randomClientKey();
-
-			AESGenerateSecretKey(secretKeyRef.current.value, clientKey);
+			alert(`Random client key : \n ${clientKey}`);
+			const AESKey = AESGenerateSecretKey(secretKeyRef.current.value, clientKey);
+			alert(`AESKey = PBKDF2(string="Secret key", salt="Client Key"): \n ${AESKey}`);
 
 			//them client key vao du lieu gui di
 			data = {
@@ -65,12 +67,13 @@ export default function LoginForm(props) {
 
 					const token = response.data.token;
 					const user = response.data.user.name;
+					const userId = response.data.user.id;
 
-					console.log("receive-message", response.data);
+					console.log("Login successful", response.data);
 					if (user && token) {
 						Cookie.set("quochoi", token);
 						Cookie.set("user", user);
-						Cookie.set("userId", response.data.user.id);
+						Cookie.set("userId", userId);
 						setMode("login");
 					} else {
 						setError({
