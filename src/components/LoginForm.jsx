@@ -60,12 +60,12 @@ export default function LoginForm(props) {
 					//safe mode AES crypto
 					if (checked) {
 						response.data = AESDecrypt(response.data.aes);
-						console.log(response.data);
 					}
 
 					const token = response.data.token;
 					const user = response.data.user.name;
 
+					console.log("receive-message", response.data);
 					if (user && token) {
 						Cookie.set("quochoi", token);
 						Cookie.set("user", user);

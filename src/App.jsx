@@ -5,7 +5,6 @@ import MainPage from "./pages/MainPage";
 
 function App() {
 	const [mode, setMode] = useState("main");
-
 	return (
 		<div className="app">
 			<Header setMode={setMode} mode={mode} />
@@ -13,5 +12,4 @@ function App() {
 		</div>
 	);
 }
-
 export default App;

@@ -1,25 +1,17 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, {useEffect, useRef, useState} from "react";
-import {useReceive} from "../hooks/socketIO";
+import {useReceive, useSyncUser} from "../hooks/socketIO";
 import "./Chart.css";
 import Message from "./Message";
 import Cookie from "js-cookie";
 import User from "./User";
 import {AESDecryptMessage, AESEncryptMessage} from "../service/AESCrypto";
 
-export default function Chart(props) {
-	const {socket, mode, setMode} = props;
-	const [users, setUsers] = useState([
-		{
-			name: "Tri",
-			id: "123456",
-		},
-		{
-			name: "Tri",
-			id: "112233",
-		},
-	]);
+function Chart(props) {
+	const {socket, mode, setMode, users} = props;
+
 	const [message, setMessage] = useState([]);
+
 	const messageRef = useRef(null);
 	const userId = Cookie.get("userId");
 	const user = Cookie.get("user");
@@ -50,7 +42,6 @@ export default function Chart(props) {
 					...newMessage,
 					payload: AESEncryptMessage(newMessage.payload),
 				};
-				console.log(newMessage);
 				socket.SendMessage(newMessage, true);
 			}
 			//Unsafe mode
@@ -64,6 +55,7 @@ export default function Chart(props) {
 
 	useEffect(() => {
 		if (receive !== "") {
+			console.log("receive-message: ", receive);
 			//Safe mode
 			if (localStorage.getItem("AESKey")) {
 				var newMessage;
@@ -96,9 +88,8 @@ export default function Chart(props) {
 		<div className="chart">
 			<div className="chart--user">
 				<div className="user--container">
-					{users.map((user) => (
-						<User key={user.id} user={user} />
-					))}
+					{users &&
+						users.map((user) => <User key={user.userId} user={user} socket={socket} />)}
 				</div>
 			</div>
 			<div className="chart--message">
@@ -130,3 +121,4 @@ export default function Chart(props) {
 		</div>
 	);
 }
+export default React.memo(Chart);

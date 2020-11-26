@@ -1,34 +1,52 @@
 import socketIOClient from "socket.io-client";
 import {useEffect, useState} from "react";
+import Cookie from "js-cookie";
 
 export const useReceive = (socket) => {
 	const [message, setMessage] = useState("");
 	useEffect(() => {
-		// console.log("Listen server");
 		socket.on("SERVER", (data) => {
 			setMessage(data);
-			console.log(data);
 		});
 	}, [socket]);
 
 	return message;
 };
 
+export const useSyncUser = (socket) => {
+	const [users, setUsers] = useState();
+	useEffect(() => {
+		socket.on("ACTIVE_USER", (data) => {
+			setUsers(data);
+		});
+		socket.on("UN_ACTIVE_USER", (data) => {
+			setUsers(data);
+		});
+	});
+	return users;
+};
+
 class SocketIO {
 	_socket;
-	constructor(userId, aes) {
+	constructor(userId) {
 		this._socket = socketIOClient(process.env.REACT_APP_SERVER_BASE);
-		this._socket.emit("USER_ID", userId);
+
+		const user = {
+			user: Cookie.get("user"),
+			userId: userId,
+		};
+		this._socket.emit("USER_ID", user);
 	}
 
-	SendMessage(message, aes) {
-		// socket.emit("CLIENT", message);
-		this._socket.emit("CLIENT", {
+	SendMessage(data, aes) {
+		const message = {
 			aes: aes,
-			user: message.user,
-			userId: message.userId,
-			payload: message.payload,
-		});
+			user: data.user,
+			userId: data.userId,
+			payload: data.payload,
+		};
+		console.log("send-message :", message);
+		this._socket.emit("CLIENT", message);
 	}
 
 	Disconnect(userId) {
