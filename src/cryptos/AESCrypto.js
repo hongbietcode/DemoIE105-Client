@@ -1,19 +1,16 @@
 const CryptoJS = require("crypto-js");
 
-export const randomClientKey = () => {
-	var clientKey = CryptoJS.lib.WordArray.random(128 / 8).toString();
-	window.localStorage.setItem("clientKey", clientKey);
+export const randomClientKey = (DF) => {
+	var clientKey = DF.getPublicKey();
+
 	return clientKey;
 };
 
 //generate key AES
-export const AESGenerateSecretKey = (secretKey, clientKey) => {
-	const AESKey128Bits = CryptoJS.PBKDF2(secretKey, clientKey, {
-		keySize: 128 / 32,
-	}).toString();
-
-	window.localStorage.setItem("AESKey", AESKey128Bits);
-	return AESKey128Bits;
+export const AESGenerateSecretKey = (DF, serverPublicKey) => {
+	const AESKey = DF.generateSecretKey(serverPublicKey);
+	window.localStorage.setItem("AESKey", AESKey);
+	return AESKey;
 };
 
 export const AESEncrypt = (jsonData) => {

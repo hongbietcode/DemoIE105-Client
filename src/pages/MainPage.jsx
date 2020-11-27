@@ -1,9 +1,9 @@
-import React, {useEffect, useMemo, useState} from "react";
+import Cookie from "js-cookie";
+import React, {useEffect, useState} from "react";
+import {BASE_SERVER_URL} from "../config";
 import Chart from "../components/Chart";
 import LoginForm from "../components/LoginForm";
 import "./MainPage.css";
-import Cookie from "js-cookie";
-import {BASE_SERVER_URL} from "../baseURL";
 
 const axios = require("axios");
 
