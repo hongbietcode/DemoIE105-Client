@@ -13,7 +13,7 @@
 - AES : dùng để client giao tiếp với server và ngược lại sau khi đăng nhập
 - SHA256 : dùng để băm mật khẩu
 - HMAC-SHA256 (HS256) để tính toán VERIFY SIGNATURE của token đăng nhập.
-- PBKDF2 : dùng để tạo AES key và **Client key** (một chuổi random do client gửi lên server nhằm tránh trùng lặp khóa)
+- Diffie-Hellman : thuật toán dùng để trao đổi khóa. Khóa được trao đổi ở đây là khóa của hệ mã hóa AES. Ở đây sử dụng **Diffie-Hellman Groups 1**   :  https://supportcenter.checkpoint.com/supportcenter/portal?eventSubmit_doGoviewsolutiondetails=&solutionid=sk27054
 
 #### 2. Quá trình hoạt động 
 
@@ -49,32 +49,32 @@
 
 2. **Safe mode** 
 
-   - Server sẽ gửi **public key** rsa về cho client 
+   - Server sẽ gửi **public key rsa** và server **public key Diffie-Hellman** về cho client 
 
-   - username + mật khẩu + **secret key** (khóa bí mật sẽ không được gửi đến server trong quá trình đăng nhập. khóa này sẽ được thương lượng trước với server và người dùng phải nhớ. Nhằm ngăn chặn tấn công kiểu **man-in-the-middle** )
+   - user nhập : username + mật khẩu. (1)
 
-   - Client sẽ tạo ra một chuổi random gọi là **client key** nhằm khi sinh khóa sẽ mang tính ngẫu nhiên 
+   - Client sẽ tạo ra một **public key Diffie-Hellman**  (2) 
 
-   -  Client sẽ sinh khóa AES bằng thuật toán PBKDF2 (Khóa này sẽ không gửi lên server nhằm đảm bảo tính bảo mật)
+   - Client sẽ dùng khóa RSA gửi 1 + 2 về cho server .
+
+   -  Cùng lúc đó Client sẽ gửi những thông tin sau lên server : **Username + password + Client public key Diffie-Hellman ** và được giải mã bằng khóa private rsa của server 
+
+   -  Server khi nhận được sẽ dùng khóa private rsa để giải mã và lấy thông tin đăng nhập so khớp mật khẩu như chế độ **Unsafe mode**  nếu đúng thì sẽ sinh khóa AES 
+
+   -  Bằng việc sử dụng **Diffie-Hellman** có số nguyên tố và căn nguyên thuộc **modp1**. Từ server và client có thể kết hợp thêm public key của nhau để sinh ra cùng một khóa. Khóa này sẽ được sử dụng là khóa mã hóa **AES**
 
      ```js
-     export const AESGenerateSecretKey = (secretKey, clientKey) => {
-     	const AESKey128Bits = CryptoJS.PBKDF2(secretKey, clientKey, {
-     		keySize: 128 / 32,
-     	}).toString();
-     
-     	window.localStorage.setItem("AESKey", AESKey128Bits);
-     	return AESKey128Bits;
-     };
+     	generateSecretKey(serverPublicKey) {
+     		//chuyển base thành buffer
+     		const serverKey=Buffer.from(serverPublicKey, "base64");
+     		const secretKey=this.client/server.computeSecret(serverKeyServer/Client).toString("base64");
+     		return secretKey;
+     	}
      ```
-
-   - Cùng lúc đó Client sẽ gửi những thông tin sau lên server : **Username + password + Client key**  và được mã hóa bằng khóa public rsa của server 
-
-   - Server khi nhận được sẽ dùng khóa private rsa để giải mã và lấy thông tin đăng nhập so khớp mật khẩu như chế độ **Unsafe mode** và truy xuất database để lấy **secret key** + **client key**  và tạo ra AES key. Khóa này sẽ hoàn toàn dống với client.
-
+     
    - Quá trình trao đổi tin nhắn sau này sẽ dùng khóa AES này
 
-3. Cài đặt và khởi chạy 
+3. **Cài đặt và khởi chạy** 
 
    - Yêu cầu máy tính :
 
@@ -83,7 +83,7 @@
      
 - Cài dặt và khởi chạy 
    
-  - Clone https://github.com/HrqstnElq/DemoIE105-Client
+  - Clone https://github.com/HrqstnElq/DemoIE105-server
    
   - mở terminal tại thư mục cùng cấp với file pakage.json. Chạy cái lệnh sau 
    
