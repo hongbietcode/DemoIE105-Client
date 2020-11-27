@@ -3,9 +3,9 @@ import Cookie from "js-cookie";
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import {BASE_SERVER_URL, DIFFIE_HELLMAN_GROUP} from "../config";
 import logo from "../images/tiger-head.png";
-import {AESDecrypt, AESGenerateSecretKey, randomClientKey} from "../service/AESCrypto";
-import DF_Client from "../service/DiffieHellman";
-import {RsaEncrypt} from "../service/RSACrypto";
+import {AESDecrypt, AESGenerateSecretKey, randomClientKey} from "../cryptos/AESCrypto";
+import DF_Client from "../cryptos/DiffieHellman";
+import {RsaEncrypt} from "../cryptos/RSACrypto";
 import "./LoginForm.css";
 
 const axios = require("axios");

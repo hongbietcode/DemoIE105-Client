@@ -7,11 +7,13 @@ export default class DF_Client {
 	}
 
 	getPrime() {
+		//chuyên thành base64
 		const prime = this.client.getPrime().toString("base64");
 		return prime;
 	}
 
 	getGenerator() {
+		//chuyên thành base64
 		const generator = this.client.getGenerator().toString("base64");
 		return generator;
 	}
@@ -23,12 +25,13 @@ export default class DF_Client {
 	}
 
 	getPrivateKey() {
+		//chuyên thành base64
 		const privateKey = this.client.getPrivateKey().toString("base64");
 		return privateKey;
 	}
 
 	generateSecretKey(serverPublicKey) {
-		//chuyển thành buffer
+		//chuyển base thành buffer
 		const serverKey = Buffer.from(serverPublicKey, "base64");
 		const secretKey = this.client.computeSecret(serverKey).toString("base64");
 		return secretKey;
