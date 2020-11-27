@@ -1,27 +1,48 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import Cookie from "js-cookie";
-import React, {useEffect, useRef, useState} from "react";
-import {BASE_SERVER_URL} from "../baseURL";
+import React, {useEffect, useMemo, useRef, useState} from "react";
+import {BASE_SERVER_URL, DIFFIE_HELLMAN_GROUP} from "../config";
 import logo from "../images/tiger-head.png";
-import {randomClientKey, AESGenerateSecretKey, AESDecrypt} from "../service/AESCrypto";
-import {RsaEncrypt} from "../service/RSACrypto";
+import {AESDecrypt, AESGenerateSecretKey, randomClientKey} from "../cryptos/AESCrypto";
+import DF_Client from "../cryptos/DiffieHellman";
+import {RsaEncrypt} from "../cryptos/RSACrypto";
 import "./LoginForm.css";
 
 const axios = require("axios");
 
 export default function LoginForm(props) {
-	const [checked, setChecked] = useState(false);
-	const [key, setKey] = useState();
 	const {setMode} = props;
+
+	const DF = useMemo(() => new DF_Client(DIFFIE_HELLMAN_GROUP), []);
+
+	const [checked, setChecked] = useState(false);
+	const [error, setError] = useState({isError: false, message: null});
+	const [key, setKey] = useState({rsaPublicKey: null, dfServerPublicKey: null});
 
 	const usernameRef = useRef(null);
 	const passwordRef = useRef(null);
-	const secretKeyRef = useRef(null);
-	const [error, setError] = useState({isError: false, message: null});
+
 	useEffect(() => {
 		if (checked) {
 			axios.get(BASE_SERVER_URL + "/api/key").then((res) => {
-				setKey(res.data.key);
-				alert(`RSA Public key :\n ${res.data.key}`);
+				const KeyServer = {
+					rsaPublicKey: res.data.rsaPublicKey,
+					dfServerPublicKey: res.data.dfServerPublicKey,
+				};
+				setKey(KeyServer);
+				alert(`Server → public key RSA: \n${KeyServer.rsaPublicKey}`);
+				alert(`Server → public key Diffie-Hellman: \n${KeyServer.dfServerPublicKey}`);
+
+				const DF_Client = {
+					prime: DF.getPrime(),
+					generator: DF.getGenerator(),
+					privateKey: DF.getPrivateKey(),
+					publicKey: DF.getPublicKey(),
+				};
+				console.log("DF_Client[Base64]", DF_Client);
+
+				const AESKey = AESGenerateSecretKey(DF, KeyServer.dfServerPublicKey);
+				console.log("Generate AES key with Diffie-Hellman", AESKey);
 			});
 		}
 	}, [checked]);
@@ -34,11 +55,7 @@ export default function LoginForm(props) {
 		};
 
 		if (checked) {
-			const clientKey = randomClientKey();
-			alert(`Random client key : \n ${clientKey}`);
-			const AESKey = AESGenerateSecretKey(secretKeyRef.current.value, clientKey);
-			alert(`AESKey = PBKDF2(string="Secret key", salt="Client Key"): \n ${AESKey}`);
-
+			const clientKey = randomClientKey(DF);
 			//them client key vao du lieu gui di
 			data = {
 				...data,
@@ -47,7 +64,7 @@ export default function LoginForm(props) {
 
 			//gui du lieu bang ma hoa rsa
 			data = {
-				rsa: RsaEncrypt(key, 1024, JSON.stringify(data)),
+				rsa: RsaEncrypt(key.rsaPublicKey, 1024, JSON.stringify(data)),
 			};
 		}
 
@@ -129,22 +146,6 @@ export default function LoginForm(props) {
 							</span>
 						</p>
 					</div>
-					{checked && (
-						<div className="field">
-							<p className="control has-icons-left">
-								<input
-									ref={secretKeyRef}
-									className="input"
-									type="text"
-									placeholder="Secret key"
-									required
-								/>
-								<span className="icon is-small is-left">
-									<i className="fas fa-lock"></i>
-								</span>
-							</p>
-						</div>
-					)}
 					<div className="mb-3">
 						<input
 							type="checkbox"

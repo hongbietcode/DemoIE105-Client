@@ -1,9 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import Cookie from "js-cookie";
 import React, {useEffect, useMemo, useRef, useState} from "react";
-import {BASE_SERVER_URL} from "../baseURL";
+import {BASE_SERVER_URL} from "../config";
+import {AESDecrypt, AESDecryptMessage, AESEncryptMessage} from "../cryptos/AESCrypto";
 import SocketIO, {useReceive} from "../hooks/socketIO";
-import {AESDecrypt, AESDecryptMessage, AESEncryptMessage} from "../service/AESCrypto";
 import "./Chart.css";
 import Message from "./Message";
 import User from "./User";

@@ -1,7 +1,7 @@
 import socketIOClient from "socket.io-client";
 import {useEffect, useState} from "react";
 import Cookie from "js-cookie";
-import {BASE_SERVER_URL} from "../baseURL";
+import {BASE_SERVER_URL} from "../config";
 
 export const useReceive = (socket) => {
 	const [message, setMessage] = useState("");
