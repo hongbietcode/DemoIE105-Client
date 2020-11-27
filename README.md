@@ -5,7 +5,7 @@
 ##### Truy cập vào link :  http://demo-antt-nhom1.herokuapp.com/ và chờ server chạy 
 ##### Sau đó truy cập website : http://demo-ie105.surge.sh hoặc https://focused-khorana-dac803.netlify.app/ nên sử dụng link http để có thể không sử dụng giao thức mã hóa TLS/SSL của websever
 
-> username : tri, trung, duy; password : 1, secret key : 1
+> username : tri, trung, duy; password : 1
 
 #### 1.	Các loại mã hóa sử dụng
 
