@@ -2,6 +2,8 @@ const DF_Browser = require("diffie-hellman/browser");
 
 export default class DF_Client {
 	constructor(group) {
+		//Group Diffie-Hellman bao gồm bộ hai số nguyên tố và căn nguyên được chon sẳn
+		//link : https://www.watchguard.com/help/docs/help-center/en-US/Content/en-US/Fireware/bovpn/manual/diffie_hellman_c.html
 		this.client = DF_Browser.getDiffieHellman(group);
 		this.client.generateKeys();
 	}
