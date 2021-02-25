@@ -1,6 +1,6 @@
 ### SERVER demo nhập môn đảm bảo an ninh thông tin
 
-##### Repositories Server : https://github.com/HrqstnElq/DemoIE105-server
+##### Repositories Server : https://github.com/VTV24/DemoIE105-server
 
 ##### Truy cập vào link :  http://demo-antt-nhom1.herokuapp.com/ và chờ server chạy 
 ##### Sau đó truy cập website : http://demo-ie105.surge.sh hoặc https://focused-khorana-dac803.netlify.app/ nên sử dụng link http để có thể không sử dụng giao thức mã hóa TLS/SSL của websever
@@ -83,7 +83,7 @@
      
 - Cài dặt và khởi chạy 
    
-  - Clone https://github.com/HrqstnElq/DemoIE105-server
+  - Clone https://github.com/VTV24/DemoIE105-server
    
   - mở terminal tại thư mục cùng cấp với file pakage.json. Chạy cái lệnh sau 
    
